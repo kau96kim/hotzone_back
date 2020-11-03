@@ -25,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'u4+mf=nu_9_cs+*@did!4fylb)vv-rn)z#v43u!rw3ce4s!4bd'
+SECRET_KEY = env('HOTZONE_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('HOTZONE_DEBUG', default=False)
 
 ALLOWED_HOSTS = ['react-hotzone.herokuapp.com', 'django-hotzone.herokuapp.com', '127.0.0.1', 'localhost']
 
@@ -146,6 +146,6 @@ CORS_ORIGIN_WHITELIST = (
        'http://localhost:3000',
        'http://localhost:8000',
        'http://localhost:5000',
-       'react-hotzone.herokuapp.com', 
-       'django-hotzone.herokuapp.com',
+       'http://react-hotzone.herokuapp.com', 
+       'http://django-hotzone.herokuapp.com',
 )
