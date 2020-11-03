@@ -35,6 +35,12 @@ class CaseSerializer(serializers.ModelSerializer):
         return obj.virus.max_infectious_period
 
 
+class CaseLocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CaseLocation
+        fields = ['id', 'case', 'location', 'date_from', 'date_to', 'category']
+
+        
 class CaseLocationListSerializer(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     address = serializers.SerializerMethodField()
@@ -57,8 +63,3 @@ class CaseLocationListSerializer(serializers.ModelSerializer):
     def get_y_coord(self, obj):
         return obj.location.y_coord
 
-
-class CaseLocationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CaseLocation
-        fields = ['id', 'case', 'location', 'date_from', 'date_to', 'category']
