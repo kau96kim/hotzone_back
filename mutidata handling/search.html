@@ -1,0 +1,8 @@
+<h1>HotZone</h1>
+<h2>Location Search</h2>
+<form action="{% url 'search' %}" method="GET">
+    <input type="text" placeholder="Search.." name="searchfor">
+    <button type="submit"><i>Search</i></button>
+</form>
+
+<p><a href="{% url 'locations' %}"> Show all locations</a></p>

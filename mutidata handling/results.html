@@ -1,0 +1,25 @@
+<h1>Search Result</h1>
+
+<h2>Locations in database</h2>
+    {% for location in results %}
+
+    <li>
+        Location: {{location.name}}</br>
+        Address: {{location.address}}</br>
+        XCoord:  {{location.xcoord}}</br>
+        YCoord:  {{location.ycoord}}</br></br>
+    </li>
+    {% endfor %}
+<h2>Locations in GeoData</h2>
+<ul>
+    {% for value in Array %}
+
+    <li>
+        Location: {{value.nameEN}}</br>
+        Address: {{value.addressEN}}</br>
+        XCoordinate: {{value.x}}</br>
+        YCoordinate: {{value.y}}</br>
+    </li>
+    <a href="{% url 'addLocation' %}?index={{value}}">Save Location</a></br></br>
+      {% endfor %}
+ </ul>
