@@ -5,6 +5,7 @@ from rest_framework import status
 from case.serializers import CaseSerializer, CaseLocationSerializer, CaseLocationListSerializer
 from case.models import Case, CaseLocation
 from location.serializers import LocationSerializer
+from location.models import Location
 import requests
 
 
@@ -44,16 +45,22 @@ class CaseLocationHistory(APIView):
             "y_coord": request.data['y_coord'],
         }
         location_serializer = LocationSerializer(data=location_data)
+        location_in_db = Location.objects.filter(location=request.data['location'])
         
-        if location_serializer.is_valid():
-            location_serializer.save()
+        if not location_in_db:
+            if location_serializer.is_valid():
+                location_serializer.save()
+                location_id = location_serializer.data['id']
+            else:
+                return Response(location_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(location_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            location_id = location_in_db.get().id
+            print(location_id)
 
         # Add Case location visit history Data
         case_locations_data = {
             'case': pk, 
-            'location': location_serializer.data['id'], 
+            'location': location_id, 
             'date_from': request.data['date_from'], 
             'date_to': request.data['date_to'], 
             'category': request.data['category']
@@ -66,4 +73,4 @@ class CaseLocationHistory(APIView):
 
         else:
             return Response(case_locations_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
