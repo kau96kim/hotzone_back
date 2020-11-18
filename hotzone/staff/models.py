@@ -10,5 +10,7 @@ class Staff(models.Model):
     last_name = models.CharField(max_length=20)
     email_address = models.CharField(max_length=30, unique=True)
 
+    token = models.CharField(max_length=64,null=True,blank=True)
+
     def __str__(self):
         return self.username

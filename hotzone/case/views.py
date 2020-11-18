@@ -6,6 +6,7 @@ from case.serializers import CaseSerializer, CaseLocationSerializer, CaseLocatio
 from case.models import Case, CaseLocation
 from location.serializers import LocationSerializer
 from location.models import Location
+from staff.models import Staff
 import requests
 
 
@@ -13,7 +14,15 @@ class CaseList(APIView):
 
     def get(self, request):
         cases = Case.objects.all()
-        serializer = CaseSerializer(cases, many=True)  
+        serializer = CaseSerializer(cases, many=True)
+
+        token = request.query_params.get('token')
+        if not token:
+            return Response({'code':2000,'error':"please log in"})
+        user_object = Staff.objects.filter(token=token).first()
+        if not user_object:
+            return Response({'code':3000,'error':"invalid token!"})
+
         return Response(serializer.data)
 
 
@@ -33,9 +42,9 @@ class CaseLocationHistory(APIView):
 
     def get(self, request, pk):
         locations = CaseLocation.objects.filter(case=pk)
-        serializer = CaseLocationListSerializer(locations, many=True)  
+        serializer = CaseLocationListSerializer(locations, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request, pk):
         # Add location Data
         location_data = {
@@ -46,7 +55,7 @@ class CaseLocationHistory(APIView):
         }
         location_serializer = LocationSerializer(data=location_data)
         location_in_db = Location.objects.filter(location=request.data['location'])
-        
+
         if not location_in_db:
             if location_serializer.is_valid():
                 location_serializer.save()
@@ -59,10 +68,10 @@ class CaseLocationHistory(APIView):
 
         # Add Case location visit history Data
         case_locations_data = {
-            'case': pk, 
-            'location': location_id, 
-            'date_from': request.data['date_from'], 
-            'date_to': request.data['date_to'], 
+            'case': pk,
+            'location': location_id,
+            'date_from': request.data['date_from'],
+            'date_to': request.data['date_to'],
             'category': request.data['category']
         }
         case_locations_serializer = CaseLocationSerializer(data=case_locations_data)
@@ -73,4 +82,3 @@ class CaseLocationHistory(APIView):
 
         else:
             return Response(case_locations_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
