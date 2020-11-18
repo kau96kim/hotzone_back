@@ -21,3 +21,7 @@ urlpatterns = [
     path('cases/', include('case.urls')),
     path('locations/', include('location.urls')),
 ]
+
+urlpatterns += [
+    path('accounts/', include('django.contrib.auth.urls')),
+]

@@ -146,6 +146,8 @@ CORS_ORIGIN_WHITELIST = (
        'http://localhost:3000',
        'http://localhost:8000',
        'http://localhost:5000',
-       'https://react-hotzone.herokuapp.com', 
+       'https://react-hotzone.herokuapp.com',
        'https://django-hotzone.herokuapp.com',
 )
+
+LOGIN_REDIRECT_URL = 'https://react-hotzone.herokuapp.com/'
