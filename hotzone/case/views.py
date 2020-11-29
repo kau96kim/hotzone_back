@@ -21,15 +21,15 @@ class CaseCluster(APIView):
         locations = CaseLocation.objects.all()
         locationArray = []
 
-        # not sure about getting D, T, C from user
-        D = request.data['d']
-        T = request.data['t']
-        C = request.data['c']
+        # determined by the input format
+        D = int(request.data['d'] or 200)
+        T = int(request.data['t'] or 3)
+        C = int(request.data['c'] or 2)
         
         for location_tmp in locations:
-            # not sure whether the day is calculated correctly
-            day = location_tmp.date_from - datetime.date(2020,1,1)
-            # not sure whether i access the data correctly            
+            
+            day = (location_tmp.date_from - datetime.date(2020,1,1)).days
+
             locationArray.append([location_tmp.location.x_coord, location_tmp.location.y_coord, day, location_tmp.case.case_number])
             
         npArray = np.array(locationArray)
@@ -41,7 +41,7 @@ class CaseCluster(APIView):
                 dist += (q[i] - p[i])**2
             spatial_dist = math.sqrt(dist)
 
-            time_dist = math.sqrt((q[2]-p[2])**2)
+            time_dist = abs(q[2]-p[2])
 
             if time_dist/time_eps <= 1 and spatial_dist/space_eps <= 1 and p[3] != q[3]:
                 return 1
@@ -51,27 +51,30 @@ class CaseCluster(APIView):
 
         def cluster(vector_4d, distance, time, minimum_cluster):
             params = {"space_eps": distance, "time_eps": time}
-            db = DBSCAN(eps=1, min_samples=minimum_cluster-1, metric=custom_metric, metric_params=params).fit_predict(vector_4d)
+            
+            #eps can also determined by user
+            db = DBSCAN(eps=10, min_samples=minimum_cluster-1, metric=custom_metric, metric_params=params).fit_predict(vector_4d)
 
             unique_labels = set(db)
             total_clusters = len(unique_labels) if -1 not in unique_labels else len(unique_labels) -1
             total_noise = list(db).count(-1)
 
-            # not sure what should I return here
-            """
+            
+            
             for k in unique_labels:
                 if k != -1:
 
                     labels_k = db == k
                     cluster_k = vector_4d[labels_k]
-
+                    
+                    # determined by your front-end output format
                     print("Cluster", k, " size:", len(cluster_k))
 
                     for pt in cluster_k:
                         print("(x:{}, y:{}, day:{}, caseNo:{})".format(pt[0], pt[1], pt[2], pt[3]))
 
                     print()
-            """
+           
 
         cluster(npArray, D, T, C)
 
