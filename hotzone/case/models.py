@@ -11,7 +11,7 @@ class Case(models.Model):
     ]
 
     objects = models.Manager()
-    case_number = models.CharField(max_length=20, primary_key=True) 
+    case_number = models.AutoField(primary_key=True) 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     virus = models.ForeignKey(Virus, on_delete=models.CASCADE)
     date_confirmed = models.DateField()
