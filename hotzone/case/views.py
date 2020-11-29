@@ -26,11 +26,11 @@ class CaseCluster(APIView):
         T = request.data['t']
         C = request.data['c']
         
-        for location in locations:
+        for location_tmp in locations:
             # not sure whether the day is calculated correctly
-            day = location.date_from - datetime.date(2020,1,1)
+            day = location_tmp.date_from - datetime.date(2020,1,1)
             # not sure whether i access the data correctly            
-            locationArray.append([location.location.x_coord, location.location.y_coord, day, location.case.case_number])
+            locationArray.append([location_tmp.location.x_coord, location_tmp.location.y_coord, day, location_tmp.case.case_number])
             
         npArray = np.array(locationArray)
 
